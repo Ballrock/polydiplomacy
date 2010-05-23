@@ -1,5 +1,5 @@
 package polybot;
 
-public class Cell {
+public class State{
 
 }
