@@ -635,14 +635,14 @@ public class Map {
 				if (province.ownedBy() == me){
 					province.calcDefVal(me);
 				}
-//				If it is owned by us then work out attack value (size of the power who owns the province)
+//				If it is not owned by us then work out attack value (size of the power who owns the province)
 				else{
 					province.setAttVal(province.ownedBy().getPowerSize());
 				}
 			}
 		}
 		
-	    //Go though each province
+	    //Go through each province
 	    provinceIterator = this.listOfProvinces.elements();
 	    while (provinceIterator.hasMoreElements()){
 			province = (Province) provinceIterator.nextElement();
@@ -915,8 +915,6 @@ public class Map {
 						}
 					}
 				}while(!selectionIsOK);
-//				String panda = (currentUnit.getOrderToken().compareTo("MTO") == 0) ? currentUnit.getOrderLocation().getName() : "";
-//				System.out.println("Unit's order is: " + currentUnit.getClass().getSimpleName() + " at " + currentUnit.getLocation().getName() + " is ordered to " + currentUnit.getOrderToken() + " " + panda);
 				units.remove(0);
 			}
 		}
@@ -1404,12 +1402,6 @@ public class Map {
 	}
 
 	
-	public void processDiplomaticMessage(String[] message) {
-		// TODO Auto-generated method stub
-		
-//		if (!message[0].equals("THX")) printMessage(message);
-	}
-	
 	public void handleORD(List<String[]> listORD, Power me) {
 				
 		movesWeAgreed.clear();
@@ -1489,19 +1481,8 @@ public class Map {
 			
 			if(order.equals("SUP") && supOrder.equals("MTO")) {
 				tempUnit.setStance(supUnit.getStance());
-				//if(supUnit.getStance()==ANGRY) power.increaseTimesAttackedUs();
 			}
 				
-		}
-		
-		Enumeration powerIterator2 = listOfPowers.elements();
-		while(powerIterator2.hasMoreElements()){
-			Power power2 = (Power) powerIterator2.nextElement();
-			if(power2!=me){
-				//power2.flushAttacks();
-				//power2.calculateEnemyFactor();
-//				System.out.println(power2.getName() + "'s enemy rating is " + power2.getEnemyFactor());
-			}
 		}
 		
 	}

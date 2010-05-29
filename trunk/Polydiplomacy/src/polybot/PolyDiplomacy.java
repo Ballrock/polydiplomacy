@@ -95,16 +95,7 @@ public class PolyDiplomacy implements MessageListener{
 				if(!message[7].equals(me.getName())) ordList.add(message);
 		} else if (message[0].equals("NOW")){
 			
-			Enumeration powerIterator = map.listOfPowers.elements();			
-		    System.out.println("--------------------------CHECKING IF I HAVE ANY FREINDS----------------------");
-			while (powerIterator.hasMoreElements()){
-				Power power = (Power) powerIterator.nextElement();
-				
-				if(power!= me && !power.getName().equals("UNO") && !power.isOut() && power.acceptedPeace()){
-					System.out.println(power.getName() + " is our friend");
-				}
-		    }
-			System.out.println("--------------------------_______________________________----------------------");
+			
 		    
 			if (message[2].equals("SPR")) turn = 0;
 			if (message[2].equals("SUM")) turn = 1;
@@ -112,9 +103,6 @@ public class PolyDiplomacy implements MessageListener{
 			if (message[2].equals("AUT")) turn = 3;
 			if (message[2].equals("WIN")) turn = 4;
 			year = message[3];
-			if(turn == FAL){
-				map.handleChances(me);
-			}
 
 			if(turn == SUM || turn == WIN || turn == AUT || turn == FAL) {
 				map.handleORD(ordList, me);
@@ -151,28 +139,11 @@ public class PolyDiplomacy implements MessageListener{
 		} else if (message[0].equals("HST")){
 			// Handle HST
 		} else if (message[0].equals("OFF")){
-//			System.out.println("The server has disconnected me. Game Over.");
-//			System.out.println("                     ,-. ");
-//			System.out.println("            ,     ,-.   ,-. ");
-//			System.out.println("           / |   (   )-(   ) ");
-//			System.out.println("           \\ |  ,.>-(   )-< ");
-//			System.out.println("            \\|,' (   )-(   ) ");
-//			System.out.println("             Y ___`-'   `-' ");
-//			System.out.println("             |/__/   `-' ");
-//			System.out.println("             | ");
-//			System.out.println("             | ");
-//			System.out.println("             | ");
-//			System.out.println("          ___|_____________");
 			System.exit(0);
 		} else if (message[0].equals("THX")){
-			// do absolutely nothing
 					
 		} else if (message[0].equals("CCD")){
 			 
-		} else if (message.length >= 11 && message[8].equals("TRY") && message[9].equals("(") && message[10].equals(")")){
-//			FRM ( ITA ) ( GER ) ( TRY ( ) )
-			// This bot is a no-press bot, we should stop trying to talk to it maybe... 
-			map.listOfPowers.get(message[2]).setNoPress();
 		}
 		else if (message[0].equals("SLO")){
 			
@@ -187,19 +158,12 @@ public class PolyDiplomacy implements MessageListener{
 		}
 		else {
 			messageQueue.add(message);
-//			printMessage(messageQueue.peek());
-//			System.out.println("Diplomatic message added to queue.");
 		}
 	}
 	
 	private void handleHLO(String[] message) {
 		me = map.getPower(message[2]);
 		passcode = Integer.parseInt(message[5]);
-		
-		// HLO (ENG) (1234) ((LVL 20) (MTL 1200))
-		
-		//------------ LATER NEED TO SET VARIANT SUCH AS PRESS LEVEL
-		// CBA to do it now.
 	}
 
 	private void handlePreGameMessage(String[] message) {
@@ -211,8 +175,7 @@ public class PolyDiplomacy implements MessageListener{
 		}
 		if(message[0].equalsIgnoreCase("MDF")){
 			map = new Map(message);
-			sendMessage(new String[]{"YES", "(", "MAP", "(", "'STANDARD'", ")", ")"});
-//			qProc.start();			
+			sendMessage(new String[]{"YES", "(", "MAP", "(", "'STANDARD'", ")", ")"});	
 			hasStarted = true; 
 			
 		}
