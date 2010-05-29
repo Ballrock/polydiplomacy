@@ -111,7 +111,7 @@ public class Power {
 	}
 	
 	public void addUnit(Unit unit){
-		if (unit.getClass().getName().equals("dip.daide.us.Army")){
+		if (unit instanceof Army){
 			armies[armyCount] = (Army) unit;
 			armyCount++;
 		} else {
