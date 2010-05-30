@@ -110,6 +110,31 @@ public abstract class Unit {
 		beingRemoved = true;
 	}
 	
+	public void retreat() {
+		if (this.retreatNodeList.isEmpty()) {
+			setDisband();
+		}
+		else {
+			//There is some nodes available
+			List<Node> sortedRetreatNodeList = this.location.getSortedAdjacentNodesListByDestValue(this.controller);
+			Node prevNode = sortedRetreatNodeList.get(0);
+			Node currentNode = prevNode;
+			for (Node n : sortedRetreatNodeList) {
+				if (!(Map.randNo(100) < Map.m_play_alternative 
+						&&
+						Map.randNo(100) >= ((prevNode.getDestValue(this.controller.getName()) - n.getDestValue(this.controller.getName()))
+						* Map.m_alternative_difference_modifier / n.getDestValue(this.controller.getName())))
+						&&
+						!n.isOccupied()
+						&& 
+						!n.getProvince().isBeingMovedTo()) { 
+					currentNode = n;
+					break;
+				}
+			}
+		}
+	}
+	
 	public boolean beingRemoved(){
 		if (beingRemoved) {
 			beingRemoved = false;

@@ -36,23 +36,23 @@ public class Map {
 	private final int DRW = 5;
 	private final int SLO = 6;
 	
-	private final int m_prox_spr_att_weight = 700;	//Importance of attacking centres we don't own in spring
-	private final int m_prox_spr_def_weight = 200;	//300 //Importance of defending our centres in spring 300
-	private final int m_prox_fall_att_weight = 600;	//Importance of attacking centres we don't own in fall
-	private final int m_prox_fall_def_weight = 300;	//400 //Importance of defending our centres in fall    400 orig
-	private final int m_spr_str_weight = 1000;		//Importance of our attack strength on a province in spring
-	private final int m_spr_comp_weight = 1000;		//Importance of our lack of competition for the province in spring
-	private final int[] m_spr_prox_weight = {100, 1000, 30, 10, 6, 5, 4, 3, 2, 1}; //Importance of proximity[n] in spring
-	private final int m_fall_str_weight = 1000;		//Importance of our attack strength on a province in fall
-	private final int m_fall_comp_weight = 1000;	//Importance of our lack of competition for the province in fall
-	private final int[] m_fall_prox_weight = {1000, 100, 30, 10, 6, 5, 4, 3, 2, 1}; //Importance of proximity[n] in fall
-	private final int PROXIMITY_DEPTH = 10;			//How deep we should take other provinces into account when evaluating a province.
-	private final int m_rem_def_weight = 1000;		//Importance of removing in provinces we don't need to defend
-	private final int m_build_def_weight = 1000;	//Importance of building in provinces we need to defend
-	private final int[] m_rem_prox_weight = {1000, 100, 30, 10, 6, 5, 4, 3, 2, 1}; //Importance of proximity[n] when removing
-	private final int[] m_build_prox_weight = {1000, 100, 30, 10, 6, 5, 4, 3, 2, 1}; //Importance of proximity[n] when building
-	private final int m_alternative_difference_modifier = 500; //500
-	private final int m_play_alternative = 30; //50
+	public static final int m_prox_spr_att_weight = 700;	//Importance of attacking centres we don't own in spring
+	public static final int m_prox_spr_def_weight = 200;	//300 //Importance of defending our centres in spring 300
+	public static final int m_prox_fall_att_weight = 600;	//Importance of attacking centres we don't own in fall
+	public static final int m_prox_fall_def_weight = 300;	//400 //Importance of defending our centres in fall    400 orig
+	public static final int m_spr_str_weight = 1000;		//Importance of our attack strength on a province in spring
+	public static final int m_spr_comp_weight = 1000;		//Importance of our lack of competition for the province in spring
+	public static final int[] m_spr_prox_weight = {100, 1000, 30, 10, 6, 5, 4, 3, 2, 1}; //Importance of proximity[n] in spring
+	public static final int m_fall_str_weight = 1000;		//Importance of our attack strength on a province in fall
+	public static final int m_fall_comp_weight = 1000;	//Importance of our lack of competition for the province in fall
+	public static final int[] m_fall_prox_weight = {1000, 100, 30, 10, 6, 5, 4, 3, 2, 1}; //Importance of proximity[n] in fall
+	public static final int PROXIMITY_DEPTH = 10;			//How deep we should take other provinces into account when evaluating a province.
+	public static final int m_rem_def_weight = 1000;		//Importance of removing in provinces we don't need to defend
+	public static final int m_build_def_weight = 1000;	//Importance of building in provinces we need to defend
+	public static final int[] m_rem_prox_weight = {1000, 100, 30, 10, 6, 5, 4, 3, 2, 1}; //Importance of proximity[n] when removing
+	public static final int[] m_build_prox_weight = {1000, 100, 30, 10, 6, 5, 4, 3, 2, 1}; //Importance of proximity[n] when building
+	public static final int m_alternative_difference_modifier = 500; //500
+	public static final int m_play_alternative = 30; //50
     
 	public static final double PCE_THRESHOLD = 0.4;
 	
@@ -992,60 +992,8 @@ public class Map {
 
 		
 		List<Unit> units = genRandomRETUnitList(me);
-		List<Node> destNodes;
-		
-		
-		while(!units.isEmpty()){
-			Unit currentUnit = units.get(0);
-			if (currentUnit.mustRetreat()){
-				destNodes = sortNodeListByDest(me, currentUnit.getMRTList());
-				boolean selectionIsOK = true;
-				do { 
-					if (destNodes.isEmpty()){
-						currentUnit.setDisband();
-						selectionIsOK = true;
-					}
-					else{
-						Node currentNode= destNodes.get(0);
-						boolean tryNextNode = true;
-						int nodeCount = 1, nextNodeChance;
-						while (tryNextNode){
-							if (nodeCount < destNodes.size()){
-								Node nextNode = destNodes.get(nodeCount++);
-								if (currentNode.getDestValue(me.getName()) == 0){
-									nextNodeChance = 0;
-								}
-								else{
-									nextNodeChance = ((currentNode.getDestValue(me.getName()) - nextNode.getDestValue(me.getName())) * m_alternative_difference_modifier) / currentNode.getDestValue(me.getName());
-								}
-								if (randNo(100) < m_play_alternative && randNo(100) >= nextNodeChance){
-									currentNode = nextNode;
-								}
-								else{
-									tryNextNode = false;
-								}
-							}
-							else{
-								tryNextNode = false;
-							}
-						}
-						
-
-						selectionIsOK = true;
-						
-						//if there is a unit moving there already
-						if (currentNode.getProvince().isBeingMovedTo()){
-							selectionIsOK = false;
-							destNodes.remove(currentNode);
-						}
-						if(selectionIsOK){
-							currentUnit.setRetreatTo(currentNode);
-						}
-					}
-				
-				}while (!selectionIsOK);					
-			}			
-			units.remove(0);
+		for (Unit n : units) {
+			n.retreat();
 		}
 	}
 	
@@ -1194,9 +1142,7 @@ public class Map {
 	
 	
 	private List<Node> sortNodeListByDest(Power me, List<Node> nodes){
-		for(int panda = 0; panda < nodes.size(); panda++){
-//				System.out.println("Unsorted provinces: " + provinces.get(panda).getProvince().getName() + " destval=" + provinces.get(panda).getProvince().getDestValue());
-		}
+
 		
 		for(int i = nodes.size(); --i>=0;){
 			boolean flipped = false;
@@ -1212,12 +1158,7 @@ public class Map {
 				return nodes;
 			}
 		}
-				
-		for(int panda = 0; panda < nodes.size(); panda++){
-//				System.out.println("Sorted provinces: " + provinces.get(panda).getProvince().getName() + " destval=" + provinces.get(panda).getProvince().getDestValue());
-		//pandas are awesome
-		}
-		
+
 		return nodes;
 	}
 	
@@ -1236,7 +1177,7 @@ public class Map {
 	}
 	
 	
-	private int randNo(int max){
+	public static int randNo(int max){
 		Random r = new Random();
 		int no = r.nextInt(max);
 		return no;
