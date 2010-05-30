@@ -13,7 +13,6 @@ public class Army extends Unit {
             String first = location.getName().substring(0,3);
             String firstOL = "";
             String firstOSU = "";
-            String second = "";
             String secondOL= "";
             String secondOSU = "";
             
@@ -30,62 +29,32 @@ public class Army extends Unit {
                 	secondOSU = orderSupportUnit.location.getName().substring(3);
                 }  
             }                    
-                      
-            
-//            if (location.getName().length() > 3){
-//                second = location.getName().substring(3);
-//           }          
-            
+             
             if(order.equals("HLD")){
-                if(second.equals("")){
-                    String orders[] = {"(","(",controller.getName(),"AMY",first,")","HLD",")"};
-                    return orders;
-                } else {
-                    String orders[] = {"(","(",controller.getName(),"AMY",first,second,")","HLD",")"};
-                    return orders;
-                }
+                String orders[] = {"(","(",controller.getName(),"AMY",first,")","HLD",")"};
+                return orders;
             } else if (order.equals("MTO")){
-                if(second.equals("")){
-                    if(secondOL.equals("")){
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","MTO",firstOL,")"};
-                        return orders;
-                    } else {
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","MTO",firstOL,")"};
-                        return orders;
-                    }
-                } else {
-                    if(secondOL.equals("")){
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","MTO",firstOL,")"};
-                        return orders;
-                    } else {
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","MTO",firstOL,")"};
-                        return orders;
-                    }
-                }
+            	if(secondOL.equals("")){
+            		String orders[] = {"(","(",controller.getName(),"AMY",first,")","MTO",firstOL,")"};
+            		return orders;
+            	} else {
+            		String orders[] = {"(","(",controller.getName(),"AMY",first,")","MTO",firstOL,")"};
+            		return orders;
+            	}
             } else if (order.equals("SUP")){
             	if(orderLocation != null){
                     String[] orderSUnit = orderSupportUnit.getCompleteOrder();
                     int len = orderSUnit.length;
                     String orders[];
                     int j;
-                    if(second.equals("")){
-                        if(orderSUnit[len-3].equals("MTO")){
-                        	orders = new String[8 + len-2];
-                        } else {
-                        	orders = new String[5 + len-2];
-                        }
-                        j = 0;
-                        orders[4]= first;
+                    if(orderSUnit[len-3].equals("MTO")){
+                    	orders = new String[8 + len-2];
                     } else {
-                        if(orderSUnit[len-3].equals("MTO")){
-                        	orders = new String[9 + len-2];
-                        } else {
-                        	orders = new String[6 + len-2];
-                        }                      
-                        j = 1;
-                        orders[4] = first;
-                        orders[5] = second;
+                    	orders = new String[5 + len-2];
                     }
+                    j = 0;
+                    orders[4]= first;
+
                     orders[0] = "(";
                     orders[1] = "(";
                     orders[2] = controller.getName();
@@ -109,66 +78,39 @@ public class Army extends Unit {
                     }
                     orders[orders.length - 1] = ")";
                     return orders;
-                } else{
-                    String unitType = orderSupportUnit.getUnitType();
-                if(second.equals("")){
-                    if(secondOSU.equals("")){
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","SUP","(",orderSupportUnit.controller.getName(),unitType,firstOSU,")",")"};
-                        return orders;
-                    } else {
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","SUP","(",orderSupportUnit.controller.getName(),unitType,"(",firstOSU,secondOSU,")",")",")"};
-                        return orders;
-                    }
-                } else {
-                    if(secondOSU.equals("")){
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","SUP","(",orderSupportUnit.controller.getName(),unitType,firstOSU,")",")"};
-                        return orders;
-                    } else {
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","SUP","(",orderSupportUnit.controller.getName(),unitType,"(",firstOSU,secondOSU,")",")",")"};
-                        return orders;
-                    }
-                }
-                    
-                    //String orders[] = {"(","(",controller.getName(),"AMY",location.getName(),")","SUP","(",orderSupportUnit.controller.getName(),unitType,orderSupportUnit.location.getName(),")",")"};
-                    //return orders;
-                }
-           } else if (order.equals("RTO")){
-                if(second.equals("")){
-                    if(secondOL.equals("")){
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","RTO",firstOL,")"};
-                        return orders;
-                    } else {
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,")","RTO",firstOL,secondOL,")"};
-                        return orders;
-                    }
-                } else {
-                    if(secondOL.equals("")){
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,second,")","RTO",firstOL,")"};
-                        return orders;
-                    } else {
-                        String orders[] = {"(","(",controller.getName(),"AMY",first,second,")","RTO",firstOL,secondOL,")"};
-                        return orders;
-                    }
-                }                
+            	} else{
+            		String unitType = orderSupportUnit.getUnitType();
+            		if(secondOSU.equals("")){
+            			String orders[] = {"(","(",controller.getName(),"AMY",first,")","SUP","(",orderSupportUnit.controller.getName(),unitType,firstOSU,")",")"};
+            			return orders;
+            		} else {
+            			String orders[] = {"(","(",controller.getName(),"AMY",first,")","SUP","(",orderSupportUnit.controller.getName(),unitType,"(",firstOSU,secondOSU,")",")",")"};
+            			return orders;
+            		}
+            	}
+                
+           }
+            
+            else if (order.equals("RTO")){
+            	if(secondOL.equals("")){
+            		String orders[] = {"(","(",controller.getName(),"AMY",first,")","RTO",firstOL,")"};
+            		return orders;
+            	} else {
+            		String orders[] = {"(","(",controller.getName(),"AMY",first,")","RTO",firstOL,secondOL,")"};
+            		return orders;
+            	}
+
            }else if (order.equals("DSB")){
-                if(second.equals("")){
-                    String orders[] = {"(","(",controller.getName(),"AMY",first,")","DSB",")"};
-                    return orders;
-                } else {
-                    String orders[] = {"(","(",controller.getName(),"AMY",first,second,")","DSB",")"};
-                    return orders;
-                }
+        	   String orders[] = {"(","(",controller.getName(),"AMY",first,")","DSB",")"};
+        	   return orders;
+               
            } else if (order.equals("REM")){
-                if(second.equals("")){
-                    String orders[] = {"(","(",controller.getName(),"AMY",first,")","REM",")"};
-                    return orders;
-                } else {
-                    String orders[] = {"(","(",controller.getName(),"AMY",first,second,")","REM",")"};
-                    return orders;
-                }                
+        	   String orders[] = {"(","(",controller.getName(),"AMY",first,")","REM",")"};
+        	   return orders;
+
            } else {
-            String orders[] = {};
-            return orders;    
+        	   String orders[] = {};
+        	   return orders;    
            }
         }
         
