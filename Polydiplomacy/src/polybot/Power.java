@@ -20,63 +20,21 @@ public class Power {
 	final private int M_SIZE_COEFFICIENT = 4;
 	final private int M_SIZE_CONSTANT = 16;
 	
-	private final double INITIAL_CREDIT_RATING = 0.8;
-	private final double INTEREST = 1.08;
-	private final int TURNS_TO_REMEMBER_HATRED = 20;
-	private final int MIN_BALANCE = -80000000; // 8-15 million roughly equates to a move. depends on season 
-	
-	private int dealsBroken = 0;
-	private int dealsKept = 0;
-	private int totalDeals = 0;
-	
 	private int balance = 0 ; 
-	private int moneyToGain; // this is set on the turn before they accept to do a move for us. The money they would expect to gain, if they do the deal for us 
-							// which is discovered in the ORD phase. 
 	
 	private double enemyFactor;
 	
 	private boolean acceptedPeace = false;
 	private boolean isOut = false;
-	private boolean noPressBot = false; 
 	private boolean backstab = false; 
 	
 	private List<Province> homes = new ArrayList<Province>();
 	
-	public void setMoneyToGain(int mtg){
-		moneyToGain = mtg; 
-	}
 	
 	public double getEnemyFactor(){
 		return enemyFactor;
 	}
 
-	public boolean hasEnoughCredit(int cost){
-		// 1 over the credit rating, multiplied by the cost. if this is <= the balance plus the min balance allocated.
-		return (   (1/   ( (dealsKept + INITIAL_CREDIT_RATING) / (dealsBroken + dealsKept + 1) )  )*cost <= (balance+(-MIN_BALANCE)));
-	}
-	
-	public void makeDeposit(int amount){
-		//amount * credit rating. 
-		balance += amount*( (dealsKept + INITIAL_CREDIT_RATING) / (dealsBroken + dealsKept + 1) );
-	}
-	
-	public void makeWithdrawal(int amount){
-		balance -= amount*INTEREST;
-	}
-	
-	public void dealKept(){
-		dealsKept++;
-		dealsBroken = totalDeals - dealsKept; 
-	}
-	
-	public void increaseDealsMade(){
-		totalDeals++;
-		dealsBroken = totalDeals - dealsKept;
-	}
-	
-	public double getCreditRating(){
-		return ( (dealsKept + INITIAL_CREDIT_RATING) / (dealsBroken + dealsKept + 1) );
-	}
 	
 	public void resetSCs(){
 		countSC = 0;
@@ -277,14 +235,6 @@ public class Power {
 	
 	public boolean isOut(){
 		return isOut;
-	}
-	
-	public boolean isNoPress(){
-		return noPressBot;
-	}
-	
-	public void setNoPress(){
-		noPressBot = true;
 	}
 	
 	public boolean wantToStab(){
