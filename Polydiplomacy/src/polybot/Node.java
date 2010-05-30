@@ -1,7 +1,5 @@
 package polybot;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.*;
 
 public class Node {
@@ -45,6 +43,26 @@ public class Node {
 		for (int nodeCount = 0; nodeCount < adjNodeCount; nodeCount++){
 			nodes.add(adjacentNodes[nodeCount]);
 		}
+		return nodes;
+	}
+	
+	public List<Node> getSortedAdjacentNodesListByDestValue(Power me) {
+		List<Node> nodes = getAdjacentNodesList();
+		for(int i = nodes.size(); --i>=0;){
+			boolean flipped = false;
+			for (int j = 0; j < i; j++){
+				if (nodes.get(j).destValue.get(me.getName()) < nodes.get(j+1).getDestValue(me.getName())){
+					Node panda = nodes.get(j); 
+					nodes.remove(j);
+					nodes.add(j+1, panda);
+					flipped = true;
+				}
+			}
+			if (!flipped){
+				return nodes;
+			}
+		}
+
 		return nodes;
 	}
 	
