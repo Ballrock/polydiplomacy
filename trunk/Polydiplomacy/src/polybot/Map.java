@@ -989,20 +989,7 @@ public class Map {
 	
 	
 	private void genRetreatOrders(Power me){
-		
-		//------------CHECKING SHIT----------------------------------
-		Army[] ourArmies = new Army[me.getArmySize()];
-		for(int i =0; i < me.getArmySize(); i++){
-			ourArmies[i] = me.getArmies()[i];
-		}
-		
-		Fleet[] ourFleets = new Fleet[me.getFleetSize()];
-		for(int i =0; i < me.getFleetSize(); i++){
-			ourFleets[i] = me.getFleets()[i];
-		}
-		
-		
-		//------------CHECKING SHIT----------------------------------
+
 		
 		List<Unit> units = genRandomRETUnitList(me);
 		List<Node> destNodes;
