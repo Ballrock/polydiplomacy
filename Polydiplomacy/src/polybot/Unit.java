@@ -132,6 +132,7 @@ public abstract class Unit {
 					break;
 				}
 			}
+			setRetreatTo(currentNode);
 		}
 	}
 	
