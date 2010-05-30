@@ -1000,33 +1000,8 @@ public class Map {
 	
 	private void genRemoveOrders(Power me, int removeCount){
 		List<Unit> units = genOrderedUnitList(me);
-		for (int removeCounter = 0; removeCounter < removeCount; removeCounter++){
-	//			boolean tryNextRemove = true;
-	//			Unit currentUnit = units.get(0);
-	//			int unitCount = 1, nextRemoveChance;
-	//			while (tryNextRemove){
-	//				if (unitCount < units.size()){
-	//					Unit nextUnit = units.get(unitCount++);
-	//					if (nextUnit.getLocation().getProvince().getDestValue() == 0){
-	//						nextRemoveChance = 0;
-	//					}
-	//					else{
-	//						nextRemoveChance = ((currentUnit.getLocation().getProvince().getDestValue() - nextUnit.getLocation().getProvince().getDestValue())* m_alternative_difference_modifier) / currentUnit.getLocation().getProvince().getDestValue();
-	//					}
-	//					if (randNo(100) < m_play_alternative && randNo(100) >= nextRemoveChance){
-	//						currentUnit = nextUnit;
-	//					}
-	//					else{
-	//						tryNextRemove = false;
-	//					}
-	//				}
-	//				else{
-	//					tryNextRemove = false;
-	//				}
-	//				
-	//				currentUnit.setRemoval();
-	//			}
-			units.get(removeCounter).setRemoval();
+		for (int i = 0; i < removeCount; i++) { 
+			units.remove(0);
 		}
 		
 	}
@@ -1035,39 +1010,27 @@ public class Map {
 	private void genBuildOrders(Power me, int buildCount){
 		List<Node> homes = sortNodeListByDest(me, getBuildHomeList(me));
 		//System.out.println("homes.size() : " + homes.size());
-		
-		while (!homes.isEmpty() && buildCount > 0){
-			boolean tryNextHome = true;
-			Node currentHome = homes.get(0);
-			int homeCounter = 0, nextHomeChance;
-			while(tryNextHome){
-				if (homeCounter < homes.size()){
-					Node nextHome = homes.get(homeCounter++);
-					if (nextHome.getDestValue(me.getName()) == 0){
-						nextHomeChance = 0;
-					}
-					else{
-						nextHomeChance = ((currentHome.getDestValue(me.getName()) - nextHome.getDestValue(me.getName()))*m_alternative_difference_modifier)/currentHome.getDestValue(me.getName());
-					}
-					if (randNo(100) < m_play_alternative && randNo(100) >= nextHomeChance){
-						currentHome = nextHome;
-					}
-					else{
-						tryNextHome = false;
-					}
+		Node prevNode = homes.get(0);
+		for (Node n : homes) {
+			if (!(Map.randNo(100) < Map.m_play_alternative 
+					&&
+					Map.randNo(100) >= ((prevNode.getDestValue(me.getName()) - n.getDestValue(me.getName()))
+					* m_alternative_difference_modifier / n.getDestValue(me.getName())))
+					&&
+					!n.isOccupied()
+					&& 
+					!n.getProvince().isBeingMovedTo()) { 
+				n.setBuildHere();
+				
+				//Remove other nodes from the home province
+				List<Node> sameNodeList = n.getProvince().getNodeList();	
+				for (Node m : sameNodeList){
+					homes.remove(m);
 				}
-				else{
-					tryNextHome = false;
-				}
+				if (buildCount-- == 0)
+					break;
 			}
-			//build at this home
-			currentHome.setBuildHere();
-			//remove other nodes from build list
-			List<Node> sameNodeList = currentHome.getProvince().getNodeList();	
-			for (int i = 0; i < sameNodeList.size(); i++){
-				homes.remove(sameNodeList.get(i));
-			}
-			buildCount--;
+			
 		}
 		if(buildCount>0){
 			waives = buildCount;
