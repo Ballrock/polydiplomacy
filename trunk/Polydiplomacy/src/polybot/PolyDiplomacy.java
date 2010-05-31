@@ -109,10 +109,15 @@ public class PolyDiplomacy implements MessageListener{
 			ordList.removeAll(ordList);
 			map.storeSeason(message[2]);
 			map.updateUnits(message);
-			map.calcDest(me);
-			map.genMoveOrders(me);
-			List<String[]> orders = map.submitOrders(me);
-			System.out.println(orders.size());
+			List<String[]> orders;
+			if (turn == FAL || turn == SPR) {
+				map.calcDest(me);
+				map.genMoveOrders(me);
+				orders = map.submitOrders(me);
+			}
+			else {
+				orders = map.processNOW(me);
+			}
 			for (int i = 0; i < orders.size(); i++){
 				sendMessage(orders.get(i));
 			}

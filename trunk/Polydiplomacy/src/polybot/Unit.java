@@ -117,22 +117,59 @@ public abstract class Unit {
 		else {
 			//There is some nodes available
 			List<Node> sortedRetreatNodeList = this.location.getSortedAdjacentNodesListByDestValue(this.controller);
-			Node prevNode = sortedRetreatNodeList.get(0);
-			Node currentNode = prevNode;
-			for (Node n : sortedRetreatNodeList) {
-				if (!(Map.randNo(100) < Map.m_play_alternative 
-						&&
-						Map.randNo(100) >= ((prevNode.getDestValue(this.controller.getName()) - n.getDestValue(this.controller.getName()))
-						* Map.m_alternative_difference_modifier / n.getDestValue(this.controller.getName())))
-						&&
-						!n.isOccupied()
-						&& 
-						!n.getProvince().isBeingMovedTo()) { 
-					currentNode = n;
-					break;
+			Node currentNode = Map.getNodeRandom(sortedRetreatNodeList, this.controller);
+			while (currentNode.isOccupied() && currentNode.getProvince().isBeingMovedTo())
+				currentNode = Map.getNodeRandom(sortedRetreatNodeList, this.controller);
+			setRetreatTo(currentNode);
+		}
+	}
+	
+	public void makeOrder(Map m) {
+		if (this.getOrderToken() == null) {
+			/* We don't know what to do */
+			Node destNode;
+			List<Node> listNodes = this.location.getAdjacentNodesList();
+			listNodes.add(this.location);
+			listNodes = this.location.getSortedAdjacentNodesListByDestValue(this.controller);
+			destNode = Map.getNodeRandom(listNodes, this.controller);
+			
+			/* Dest node == current Node -> Hold */
+			if (destNode.equals(this.location)) {
+				this.setHold();
+			}
+			else {
+				if(this.location.getProvince().isOccupied()) {
+					if (destNode.getProvince().getUnit().getController().getName().compareTo(this.controller.getName()) == 0) {
+						/* The current node is occupied by a unit owned by us */
+						if (destNode.getProvince().getUnit().getOrderToken() == null) {
+							/* The unit on the node don't know yet what to do, we ask for an action to figure out what we gonna do */
+							destNode.getProvince().getUnit().makeOrder(m);
+						}
+						else if (destNode.getProvince().getUnit().getOrderToken().compareTo("MTO") != 0 && destNode.getProvince().getUnit().getOrderToken().compareTo("CTO") != 0) {
+							/* The unit is not moving */
+							/* We support it */
+							this.setSupportHold(destNode.getProvince().getUnit());
+						}
+						else if (destNode.getProvince().getUnit().getOrderToken().compareTo("MTO") == 0) {
+							/* The unit is moving out, we take her place */
+							this.setMove(destNode);
+						}
+					}
+					else {
+						/* This province is occupied by another power, so if we've chosen this one, we attack it */
+						this.setMove(destNode);
+					}
+				}
+				/* Empty spot */
+				if (destNode.getProvince().isBeingMovedTo()) {
+					/* A unit wants to move to this province, maybe we can support it */
+					this.setSupportMove(destNode.getProvince().getUnit(), destNode);
+				}
+				else {
+					/* It's a free province where nobody wants to go, so we can quietly move this way */
+					this.setMove(destNode);
 				}
 			}
-			setRetreatTo(currentNode);
 		}
 	}
 	

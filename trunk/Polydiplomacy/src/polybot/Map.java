@@ -1009,31 +1009,26 @@ public class Map {
 
 	private synchronized void genBuildOrders(Power me, int buildCount){
 		List<Node> homes = sortNodeListByDest(me, getBuildHomeList(me));
-		//System.out.println("homes.size() : " + homes.size());
+		System.out.println("homes.size() : " + homes.size());
 		Node prevNode;
 		if (homes.size() > 0) {
 			prevNode = homes.get(0);
 			for (Node n : homes) {
-				Node currentNode = n;
-				if (!(Map.randNo(100) < Map.m_play_alternative 
-						&&
-						Map.randNo(100) >= ((prevNode.getDestValue(me.getName()) - currentNode.getDestValue(me.getName()))
-						* m_alternative_difference_modifier / currentNode.getDestValue(me.getName())))
-						&&
-						!currentNode.isOccupied()
-						&& 
-						!currentNode.getProvince().isBeingMovedTo()) { 
-					currentNode.setBuildHere();
-					
-					//Remove other nodes from the home province
-					List<Node> sameNodeList = currentNode.getProvince().getNodeList();	
-					for (Node m : sameNodeList){
-						homes.remove(m);
+				if (!n.isBuildingHere()) {
+					if (!(Map.randNo(100) < Map.m_play_alternative 
+							&&
+							Map.randNo(100) >= ((prevNode.getDestValue(me.getName()) - n.getDestValue(me.getName()))
+							* m_alternative_difference_modifier / n.getDestValue(me.getName())))
+							&&
+							!n.isOccupied()
+							&& 
+							!n.getProvince().isBeingMovedTo()) { 
+						n.setBuildHere();
+						
+						if (buildCount-- == 0)
+							break;
 					}
-					if (buildCount-- == 0)
-						break;
 				}
-				
 			}
 			if(buildCount>0){
 				waives = buildCount;
@@ -1127,6 +1122,21 @@ public class Map {
 		}
 
 		return nodes;
+	}
+	
+	public static Node getNodeRandom(List<Node> listNodes, Power me) {
+		Node prevNode = listNodes.get(0);
+		Node currentNode = prevNode;
+		for (Node n : listNodes) {
+			if (!(Map.randNo(100) > Map.m_play_alternative 
+					&&
+					Map.randNo(100) >= ((prevNode.getDestValue(me.getName()) - n.getDestValue(me.getName()))
+					* Map.m_alternative_difference_modifier / n.getDestValue(me.getName())))) { 
+				currentNode = n;
+				return currentNode;
+			}
+		}
+		return currentNode;
 	}
 	
 	private List<Node> getBuildHomeList(Power me){

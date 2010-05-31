@@ -141,7 +141,7 @@ public class Province {
 	
 	public Unit getUnit(){
 		
-		for(int i = 0; i       <3        ; i++) {//LOL, it's a heart <3!
+		for(int i = 0; i < 3; i++) {
 			if(containsNodes[i]!=null) {
 				if(containsNodes[i].isOccupied()){
 					return containsNodes[i].getUnit();
