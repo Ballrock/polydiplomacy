@@ -103,25 +103,20 @@ public class PolyDiplomacy implements MessageListener{
 			if (message[2].equals("AUT")) turn = 3;
 			if (message[2].equals("WIN")) turn = 4;
 			year = message[3];
-
 			if(turn == SUM || turn == WIN || turn == AUT || turn == FAL) {
 				map.handleORD(ordList, me);
 			}
 			ordList.removeAll(ordList);
-
 			map.storeSeason(message[2]);
 			map.updateUnits(message);
-			
-			if (turn == FAL || turn == SPR){
-				messageQueue.clear();
-//				System.out.println("After thread declaration");
-			} else {
-				// do win, sum, aut
-				List<String[]> orders = map.processNOW(me);
-				for (int i = 0; i < orders.size(); i++){
-					sendMessage(orders.get(i));
-				}
+			map.calcDest(me);
+			map.genMoveOrders(me);
+			List<String[]> orders = map.submitOrders(me);
+			System.out.println(orders.size());
+			for (int i = 0; i < orders.size(); i++){
+				sendMessage(orders.get(i));
 			}
+			
 			
 		} else if (message[0].equals("SCO")){
 			// Handle SCO
@@ -144,6 +139,9 @@ public class PolyDiplomacy implements MessageListener{
 					
 		} else if (message[0].equals("CCD")){
 			 
+		}
+		else if (message[0].equals("SVE")) {
+			System.out.println("Saving game : "+message[2]);
 		}
 		else if (message[0].equals("SLO")){
 			
