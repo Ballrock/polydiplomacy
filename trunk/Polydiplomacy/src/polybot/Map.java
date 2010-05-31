@@ -72,7 +72,6 @@ public class Map {
 	
 	public void updateSCO(String[] sco){
 		// This method updates which supply centres are owned each turn. 
-		
 		killAllSCs();
 		
 		
@@ -130,6 +129,7 @@ public class Map {
 			if(!chunk[3].equals("(")) {
 //				NO COASTS 
 				Node[] tempNodeArray = (listOfProvinces.get(chunk[3])).getNodeArray();
+				
  
 				Unit currentUnit = new Fleet(currentPower, tempNodeArray[1]);
 				tempNodeArray[1].occupy(currentUnit);
@@ -1007,33 +1007,37 @@ public class Map {
 	}
 	
 
-	private void genBuildOrders(Power me, int buildCount){
+	private synchronized void genBuildOrders(Power me, int buildCount){
 		List<Node> homes = sortNodeListByDest(me, getBuildHomeList(me));
 		//System.out.println("homes.size() : " + homes.size());
-		Node prevNode = homes.get(0);
-		for (Node n : homes) {
-			if (!(Map.randNo(100) < Map.m_play_alternative 
-					&&
-					Map.randNo(100) >= ((prevNode.getDestValue(me.getName()) - n.getDestValue(me.getName()))
-					* m_alternative_difference_modifier / n.getDestValue(me.getName())))
-					&&
-					!n.isOccupied()
-					&& 
-					!n.getProvince().isBeingMovedTo()) { 
-				n.setBuildHere();
-				
-				//Remove other nodes from the home province
-				List<Node> sameNodeList = n.getProvince().getNodeList();	
-				for (Node m : sameNodeList){
-					homes.remove(m);
+		Node prevNode;
+		if (homes.size() > 0) {
+			prevNode = homes.get(0);
+			for (Node n : homes) {
+				Node currentNode = n;
+				if (!(Map.randNo(100) < Map.m_play_alternative 
+						&&
+						Map.randNo(100) >= ((prevNode.getDestValue(me.getName()) - currentNode.getDestValue(me.getName()))
+						* m_alternative_difference_modifier / currentNode.getDestValue(me.getName())))
+						&&
+						!currentNode.isOccupied()
+						&& 
+						!currentNode.getProvince().isBeingMovedTo()) { 
+					currentNode.setBuildHere();
+					
+					//Remove other nodes from the home province
+					List<Node> sameNodeList = currentNode.getProvince().getNodeList();	
+					for (Node m : sameNodeList){
+						homes.remove(m);
+					}
+					if (buildCount-- == 0)
+						break;
 				}
-				if (buildCount-- == 0)
-					break;
+				
 			}
-			
-		}
-		if(buildCount>0){
-			waives = buildCount;
+			if(buildCount>0){
+				waives = buildCount;
+			}
 		}
 	}			
 	 
@@ -1155,6 +1159,8 @@ public class Map {
 		int fleetCount = me.getFleetSize();
 		List<Unit> supUnits = new ArrayList<Unit>(me.getArmySize() + me.getFleetSize());
 		
+		System.out.println("Size army : "+armyCount+" - Size Fleet : "+fleetCount);
+		
 		if (season == SPR || season == FAL){
 			for (int i = 0; i < armyCount; i++){
 				if (myArmies[i].getOrderToken().compareTo("SUP") == 0 ){
@@ -1221,7 +1227,9 @@ public class Map {
 			}
 		}
 		else{//SENDING BUILD/REMOVE ORDERS THIS IS WINTER. 
+			System.out.println("WINTER");
 			if (me.getArmySize()+me.getFleetSize() > me.countSCs()){
+				System.out.println("remove");
 				for (int i = 0; i < armyCount; i++){
 					if(myArmies[i].beingRemoved()){
 						order = new String[myArmies[i].getCompleteOrder().length + 1];
@@ -1247,6 +1255,7 @@ public class Map {
 				}
 			}
 			else{
+				System.out.println("ok");
 				List<Node> homes = getBuildHomeList(me);
 				for (int i = 0; i < homes.size(); i++){
 //						System.out.println(homes.get(i).getName()  + " build here? " + homes.get(i).buildHere());
