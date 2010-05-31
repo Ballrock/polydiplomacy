@@ -119,6 +119,10 @@ public class Node {
 		return false;
 	}
 	
+	public boolean isBuildingHere() {
+		return this.buildHere;
+	}
+	
 	public void setBuildHere(){
 		buildHere = true;
 	}
