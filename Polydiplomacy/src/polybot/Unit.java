@@ -138,17 +138,22 @@ public abstract class Unit {
 				this.setHold();
 			}
 			else {
-				if(this.location.getProvince().isOccupied()) {
+				if(destNode.getProvince().isOccupied()) {
 					if (destNode.getProvince().getUnit().getController().getName().compareTo(this.controller.getName()) == 0) {
 						/* The current node is occupied by a unit owned by us */
 						if (destNode.getProvince().getUnit().getOrderToken() == null) {
 							/* The unit on the node don't know yet what to do, we ask for an action to figure out what we gonna do */
-							destNode.getProvince().getUnit().makeOrder(m);
+							//destNode.getProvince().getUnit().makeOrder(m);
+							this.setHold();
 						}
 						else if (destNode.getProvince().getUnit().getOrderToken().compareTo("MTO") != 0 && destNode.getProvince().getUnit().getOrderToken().compareTo("CTO") != 0) {
 							/* The unit is not moving */
-							/* We support it */
-							this.setSupportHold(destNode.getProvince().getUnit());
+							
+							/* We support it if we can reach the province where she's moving to*/
+//							if (!(destNode.getProvince().getUnit().getOrderToken().compareTo("SUP") == 0))
+//								this.setSupportHold(destNode.getProvince().getUnit());
+//							else
+								this.setHold();
 						}
 						else if (destNode.getProvince().getUnit().getOrderToken().compareTo("MTO") == 0) {
 							/* The unit is moving out, we take her place */
@@ -163,7 +168,8 @@ public abstract class Unit {
 				/* Empty spot */
 				if (destNode.getProvince().isBeingMovedTo()) {
 					/* A unit wants to move to this province, maybe we can support it */
-					this.setSupportMove(destNode.getProvince().getUnit(), destNode);
+					//this.setSupportMove(destNode.getProvince().getUnitBeingMovedTo(), destNode);
+					this.setMove(destNode);
 				}
 				else {
 					/* It's a free province where nobody wants to go, so we can quietly move this way */

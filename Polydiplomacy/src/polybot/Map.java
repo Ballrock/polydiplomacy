@@ -783,19 +783,7 @@ public class Map {
 			}
 
 			
-			//============================================+ADAM IS CHANGING HERE TO TRY AND MAKE BACKSTAB BOT------------------------------------------------------
-			
-			if (node.isOccupied()){
-				if(node.getUnit().getController()!=me) destWeight *= (node.getUnit().getController().wantToStab()) ? 1.5 : 1;
-			}
-			if (node.getProvince().isSC()){
-				if(node.getProvince().ownedBy()!=me) destWeight *= (node.getProvince().ownedBy().wantToStab()) ? 1.5 :1;
-			}
-//			
-//			============================================+ADAM IS CHANGING HERE TO TRY AND MAKE BACKSTAB BOT------------------------------------------------------
-			
-			
-			node.setDestValue(me.getName(), destWeight);
+			node.setDestValue(me.getName(), (destWeight == 0) ? 1 : destWeight);
 		}
 	}
 	
@@ -811,7 +799,7 @@ public class Map {
 			}
 			//Add a def value
 			destWeight += defWeight * node.getProvince().getDefVal();
-			node.setDestValue(me.getName(), destWeight);
+			node.setDestValue(me.getName(), (destWeight == 0) ? 1 : destWeight);
 		}
 	}
 		
@@ -821,7 +809,11 @@ public class Map {
 		boolean orderUnitToMove;
 		List<Node> destNodes;
 		
-		//Go through each unit (which is in a random order)
+		for (Unit n : units) {
+			n.makeOrder(this);
+		}
+		
+		/*//Go through each unit (which is in a random order)
 		while(!units.isEmpty()){
 			Unit currentUnit = units.get(0);
 
@@ -918,7 +910,7 @@ public class Map {
 				units.remove(0);
 			}
 		}
-		checkForWastedHolds(me);
+		checkForWastedHolds(me);*/
 	}
 	
 	private void checkForWastedHolds(Power me){
@@ -999,11 +991,10 @@ public class Map {
 	
 	
 	private void genRemoveOrders(Power me, int removeCount){
-		List<Unit> units = genOrderedUnitList(me);
-		for (int i = 0; i < removeCount; i++) { 
-			units.remove(0);
+		List<Unit> units = me.getUnitListSortedASC();
+		for (int i = 0; i < removeCount; i++) {
+			units.get(i).setRemoval();
 		}
-		
 	}
 	
 
@@ -1014,7 +1005,7 @@ public class Map {
 		if (homes.size() > 0) {
 			prevNode = homes.get(0);
 			for (Node n : homes) {
-				if (!n.isBuildingHere()) {
+				if (!n.getProvince().isBuildingHere()) {
 					if (!(Map.randNo(100) < Map.m_play_alternative 
 							&&
 							Map.randNo(100) >= ((prevNode.getDestValue(me.getName()) - n.getDestValue(me.getName()))
@@ -1030,9 +1021,10 @@ public class Map {
 					}
 				}
 			}
-			if(buildCount>0){
-				waives = buildCount;
-			}
+		}
+		if(buildCount>0){
+			System.out.println("waive");
+			waives = buildCount;
 		}
 	}			
 	 
@@ -1068,41 +1060,6 @@ public class Map {
 		return units;
 	}
 	
-
-	
-	private List<Unit> genOrderedUnitList(Power me){
-		List<Unit> units = new ArrayList<Unit>(me.getArmySize() + me.getFleetSize());
-		for (int x = 0; x < me.getArmySize(); x++){
-			units.add(me.getArmies()[x]);
-		}
-		for (int x = me.getArmySize(); x < me.getArmySize() + me.getFleetSize(); x++){
-			units.add(me.getFleets()[x - me.getArmySize()]);
-		}
-		return sortUnitsByDestVal(me, units);
-	}
-	
-	
-	
-	private List<Unit> sortUnitsByDestVal(Power me, List<Unit> units){
-		for(int i = units.size(); --i>=0;){
-			boolean flipped = false;
-			for (int j = 0; j < i; j++){
-				if (units.get(j).getLocation().getDestValue(me.getName()) > units.get(j+1).getLocation().getDestValue(me.getName())){
-					Unit panda = units.get(j); 
-					units.remove(j);
-					units.add(j+1, panda);
-					flipped = true;
-				}
-			}
-			if (!flipped){
-				return units;
-			}
-		}
-		return units;
-	}
-	
-	
-	
 	private List<Node> sortNodeListByDest(Power me, List<Node> nodes){
 
 		
@@ -1130,8 +1087,8 @@ public class Map {
 		for (Node n : listNodes) {
 			if (!(Map.randNo(100) > Map.m_play_alternative 
 					&&
-					Map.randNo(100) >= ((prevNode.getDestValue(me.getName()) - n.getDestValue(me.getName()))
-					* Map.m_alternative_difference_modifier / n.getDestValue(me.getName())))) { 
+					Map.randNo(100) >= (((prevNode.getDestValue(me.getName()) - n.getDestValue(me.getName()))
+					* Map.m_alternative_difference_modifier) / n.getDestValue(me.getName())))) { 
 				currentNode = n;
 				return currentNode;
 			}
