@@ -809,6 +809,10 @@ public class Map {
 		boolean orderUnitToMove;
 		List<Node> destNodes;
 		
+		Enumeration<Province> e = this.listOfProvinces.elements();
+		while (e.hasMoreElements())
+			e.nextElement().resetBeingMovedTo();
+		
 		for (Unit n : units) {
 			n.makeOrder(this);
 		}

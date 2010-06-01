@@ -150,10 +150,8 @@ public abstract class Unit {
 							/* The unit is not moving */
 							
 							/* We support it if we can reach the province where she's moving to*/
-//							if (!(destNode.getProvince().getUnit().getOrderToken().compareTo("SUP") == 0))
-//								this.setSupportHold(destNode.getProvince().getUnit());
-//							else
-								this.setHold();
+							this.setSupportHold(destNode.getProvince().getUnit());
+
 						}
 						else if (destNode.getProvince().getUnit().getOrderToken().compareTo("MTO") == 0) {
 							/* The unit is moving out, we take her place */
@@ -166,14 +164,15 @@ public abstract class Unit {
 					}
 				}
 				/* Empty spot */
-				if (destNode.getProvince().isBeingMovedTo()) {
-					/* A unit wants to move to this province, maybe we can support it */
-					//this.setSupportMove(destNode.getProvince().getUnitBeingMovedTo(), destNode);
-					this.setMove(destNode);
-				}
 				else {
-					/* It's a free province where nobody wants to go, so we can quietly move this way */
-					this.setMove(destNode);
+					if (destNode.getProvince().isBeingMovedTo()) {
+						/* A unit wants to move to this province, maybe we can support it */
+						this.setSupportMove(destNode.getProvince().getUnitBeingMovedTo(), destNode);
+					}
+					else {
+						/* It's a free province where nobody wants to go, so we can quietly move this way */
+						this.setMove(destNode);
+					}
 				}
 			}
 		}
