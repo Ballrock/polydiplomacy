@@ -107,6 +107,14 @@ public class Node {
 		destValue.put(power, value);
 	}
 	
+	public boolean isAdjacentTo(Node n) {
+		for (int i = 0; i < this.adjacentNodes.length; i++) {
+			if (this.adjacentNodes[i].equals(n))
+				return true;
+		}
+		return false;
+	}
+	
 	public int getDestValue(String power){
 		return destValue.get(power);
 	}

@@ -208,5 +208,12 @@ public class Province {
 		return demilitarisedBy;
 	}
 	
+	public boolean isBuildingHere() {
+		for (int i = 0; i < this.containsNodes.length; i++) {
+			if (this.containsNodes[i] != null && this.containsNodes[i].isBuildingHere())
+				return true;
+		}
+		return false;
+	}
 	
 }

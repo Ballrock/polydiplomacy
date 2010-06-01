@@ -125,6 +125,46 @@ public class Power {
 		return units;
 	}
 	
+	public List<Unit> getUnitListSortedASC() {
+		List<Unit> units = getUnitList();
+		for(int i = units.size(); --i>=0;){
+			boolean flipped = false;
+			for (int j = 0; j < i; j++){
+				if (units.get(j).getLocation().getDestValue(this.name) > units.get(j+1).getLocation().getDestValue(this.name)){
+					Unit panda = units.get(j); 
+					units.remove(j);
+					units.add(j+1, panda);
+					flipped = true;
+				}
+			}
+			if (!flipped){
+				return units;
+			}
+		}
+
+		return units;
+	}
+	
+	public List<Unit> getUnitListSortedDESC() {
+		List<Unit> units = getUnitList();
+		for(int i = units.size(); --i>=0;){
+			boolean flipped = false;
+			for (int j = 0; j < i; j++){
+				if (units.get(j).getLocation().getDestValue(this.name) < units.get(j+1).getLocation().getDestValue(this.name)){
+					Unit panda = units.get(j); 
+					units.remove(j);
+					units.add(j+1, panda);
+					flipped = true;
+				}
+			}
+			if (!flipped){
+				return units;
+			}
+		}
+
+		return units;
+	}
+	
 	// Retardbot's vulnerability to a stab from this power
 	public int stabGain(Power retardbot){
 		// iterate over this power's units getting average value of retardbot's provinces adjacent to this unit
