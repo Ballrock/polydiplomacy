@@ -109,6 +109,7 @@ public class PolyDiplomacy implements MessageListener{
 			ordList.removeAll(ordList);
 			map.storeSeason(message[2]);
 			map.updateUnits(message);
+			map.linkUnits(me);
 			List<String[]> orders;
 			if (turn == FAL || turn == SPR) {
 				map.calcDest(me);

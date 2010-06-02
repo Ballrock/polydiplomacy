@@ -179,10 +179,5 @@ public class Fleet extends Unit {
             return "FLT";
         }
 
-		@Override
-		public void update(Observable arg0, Object arg1) {
-			// TODO Auto-generated method stub
-			
-		}
 
 }
