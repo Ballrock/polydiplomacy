@@ -1,5 +1,7 @@
 package polybot;
 
+import java.util.Observable;
+
 public class Fleet extends Unit {
 
 	public Fleet(Power controller, Node location) {
@@ -176,5 +178,11 @@ public class Fleet extends Unit {
         public String getUnitType(){
             return "FLT";
         }
+
+		@Override
+		public void update(Observable arg0, Object arg1) {
+			// TODO Auto-generated method stub
+			
+		}
 
 }

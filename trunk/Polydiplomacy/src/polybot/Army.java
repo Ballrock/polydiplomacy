@@ -1,5 +1,7 @@
 package polybot;
 
+import java.util.Observable;
+
 public class Army extends Unit {
 
 	public Army(Power controller, Node location) {
@@ -117,4 +119,11 @@ public class Army extends Unit {
         public String getUnitType(){
             return "AMY";
         }
+
+
+		@Override
+		public void update(Observable arg0, Object arg1) {
+			// TODO Auto-generated method stub
+			
+		}
 }
