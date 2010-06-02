@@ -2,8 +2,10 @@ package polybot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public abstract class Unit {
+public abstract class Unit extends Observable implements Observer{
 	protected Node location;
 	protected Power controller; 
 	protected String order = null;
