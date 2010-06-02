@@ -503,20 +503,28 @@ public class Map {
 	}
 
 	private void killAllUnits() {
-		for (Iterator i = listOfNodes.values().iterator(); i.hasNext(); ) {
-			  Node current = (Node) i.next();
+		for (Iterator<Node> i = listOfNodes.values().iterator(); i.hasNext(); ) {
+			  Node current = i.next();
 			  current.unoccupy();
 			}
-		for (Iterator i = listOfPowers.values().iterator(); i.hasNext(); ) {
-			  Power current = (Power) i.next();
+		for (Iterator<Power> i = listOfPowers.values().iterator(); i.hasNext(); ) {
+			  Power current = i.next();
 			  current.killAllUnits();
 		}
 		
 	}
 	
+	public void linkUnits(Power me) {
+		for(Unit n : me.getUnitList()) {
+			for (Unit m : me.getUnitList()) {
+				if (!m.equals(n)) {
+					n.addObserver(m);
+				}
+			}
+		}
+	}
+	
 	public void updateUnits(String[] message) {
-		
-		
 		
 		killAllUnits();
 		
@@ -529,6 +537,7 @@ public class Map {
 			handleUnit(takeLeft(message, closingBracket));
 			message = takeRight(message, closingBracket);
 		}
+	
 		
 	}
 
@@ -814,7 +823,8 @@ public class Map {
 			e.nextElement().resetBeingMovedTo();
 		
 		for (Unit n : units) {
-			n.makeOrder(this);
+			if (n.getOrderToken() == null)
+				n.makeOrder(this);
 		}
 		
 		/*//Go through each unit (which is in a random order)
@@ -1134,6 +1144,10 @@ public class Map {
 		
 		if (season == SPR || season == FAL){
 			for (int i = 0; i < armyCount; i++){
+				if (myArmies[i] == null)
+					System.out.println("NULL1");
+				else if (myArmies[i].getOrderToken() == null)
+					System.out.println("NULL2");
 				if (myArmies[i].getOrderToken().compareTo("SUP") == 0 ){
 					supUnits.add(myArmies[i]);
 				}
